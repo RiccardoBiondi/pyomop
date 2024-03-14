@@ -123,7 +123,7 @@ class CdmVocabulary(object):
         df = df.replace(np.nan, None)
         _ = await self.write_vocab(df, 'concept_ancestor', 'replace')
         
-        df = pd.read_csv(folder + '/CONCEPT_SYNONYM.csv', sep='\t', nrows=sample, on_bad_lines='skip')
+        df = pd.read_csv(folder + '/CONCEPT_SYNONYM.csv', sep=sep, nrows=sample, on_bad_lines='skip')
         df = df.replace(np.nan, None)
         _ = await self.write_vocab(df, 'concept_synonym', 'replace')
 
