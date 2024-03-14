@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 from .cdm6_tables import Concept
 import asyncio
@@ -13,6 +14,11 @@ import numpy as np
 from sqlalchemy.ext.automap import automap_base, AutomapBase
 from sqlalchemy import select
 class CdmVocabulary(object):
+
+    FILE_TO_TABLE = {
+        'DRUG_STRENGTH': 'drug_strength'
+
+    }
     def __init__(self, cdm):
         self._concept_id = 0
         self._concept_name = ''
@@ -88,37 +94,57 @@ class CdmVocabulary(object):
             self._vocabulary_id = 0
             self._concept_id = 0
 
-    def create_vocab(self, folder, sample=None):
-        try:
-            df = pd.read_csv(folder + '/DRUG_STRENGTH.csv', sep='\t', nrows=sample, on_bad_lines='skip')
-            asyncio.run(self.write_vocab(df, 'drug_strength', 'replace'))
-            # df.to_sql('drug_strength', con=self._engine, if_exists = 'replace')
-            df = pd.read_csv(folder + '/CONCEPT.csv', sep='\t', nrows=sample, on_bad_lines='skip')
-            asyncio.run(self.write_vocab(df, 'concept', 'replace'))
-            # df.to_sql('concept', con=self._engine, if_exists = 'replace')
-            df = pd.read_csv(folder + '/CONCEPT_RELATIONSHIP.csv', sep='\t', nrows=sample, on_bad_lines='skip')
-            asyncio.run(self.write_vocab(df, 'concept_relationship', 'replace'))
-            # df.to_sql('concept_relationship', con=self._engine, if_exists = 'replace')
-            df = pd.read_csv(folder + '/CONCEPT_ANCESTOR.csv', sep='\t', nrows=sample, on_bad_lines='skip')
-            asyncio.run(self.write_vocab(df, 'concept_ancestor', 'replace'))
-            # df.to_sql('concept_ancester', con=self._engine, if_exists = 'replace')
-            df = pd.read_csv(folder + '/CONCEPT_SYNONYM.csv', sep='\t', nrows=sample, on_bad_lines='skip')
-            asyncio.run(self.write_vocab(df, 'concept_synonym', 'replace'))
-            # df.to_sql('concept_synonym', con=self._engine, if_exists = 'replace')
-            df = pd.read_csv(folder + '/VOCABULARY.csv', sep='\t', nrows=sample, on_bad_lines='skip')
-            asyncio.run(self.write_vocab(df, 'vocabulary', 'replace'))
-            # df.to_sql('vocabulary', con=self._engine, if_exists = 'replace')
-            df = pd.read_csv(folder + '/RELATIONSHIP.csv', sep='\t', nrows=sample, on_bad_lines='skip')
-            asyncio.run(self.write_vocab(df, 'relationship', 'replace'))
-            # df.to_sql('relationship', con=self._engine, if_exists = 'replace')
-            df = pd.read_csv(folder + '/CONCEPT_CLASS.csv', sep='\t', nrows=sample, on_bad_lines='skip')
-            asyncio.run(self.write_vocab(df, 'concept_class', 'replace'))
-            # df.to_sql('concept_class', con=self._engine, if_exists = 'replace')
-            df = pd.read_csv(folder + '/DOMAIN.csv', sep='\t', nrows=sample, on_bad_lines='skip')
-            asyncio.run(self.write_vocab(df, 'domain', 'replace'))
-            # df.to_sql('domain', con=self._engine, if_exists = 'replace')
-        except Exception as e:
-            print(f"An error occurred while creating the vocabulary: {e}")
+    async def create_vocab(self, folder, sample=None, sep='\t'):
+
+        #for k, v in self.FILE_TO_TABLE.items():
+
+        #    try:
+        #        df = pd.read_csv(os.path.join(folder, f'{k}.csv'), sep=sep, nrows=sample, on_on_bad_lines='skip')
+        #        df = df.replace(np.nan, None)
+        #        _ = await self.write_vocab(df, v, 'replace')
+        #    except Exception:
+        #        pass
+        #try:
+
+        # TODO: Substitute with a fol loop to remove code redundency
+        df = pd.read_csv(folder + '/DRUG_STRENGTH.csv', sep=sep, nrows=sample, on_bad_lines='skip')
+        df = df.replace(np.nan, None)
+        _ = await self.write_vocab(df, 'drug_strength', 'replace')
+
+        df = pd.read_csv(folder + '/CONCEPT.csv', sep=sep, nrows=sample, on_bad_lines='skip')
+        df = df.replace(np.nan, None)
+        _ = await self.write_vocab(df, 'concept', 'replace')
+
+        df = pd.read_csv(folder + '/CONCEPT_RELATIONSHIP.csv', sep=sep, nrows=sample, on_bad_lines='skip')
+        df = df.replace(np.nan, None)
+        _ = await self.write_vocab(df, 'concept_relationship', 'replace')
+
+        df = pd.read_csv(folder + '/CONCEPT_ANCESTOR.csv', sep=sep, nrows=sample, on_bad_lines='skip')
+        df = df.replace(np.nan, None)
+        _ = await self.write_vocab(df, 'concept_ancestor', 'replace')
+        
+        df = pd.read_csv(folder + '/CONCEPT_SYNONYM.csv', sep='\t', nrows=sample, on_bad_lines='skip')
+        df = df.replace(np.nan, None)
+        _ = await self.write_vocab(df, 'concept_synonym', 'replace')
+
+        df = pd.read_csv(folder + '/VOCABULARY.csv', sep=sep, nrows=sample, on_bad_lines='skip')
+        df = df.replace(np.nan, None)
+        _ = await self.write_vocab(df, 'vocabulary', 'replace')
+
+        df = pd.read_csv(folder + '/RELATIONSHIP.csv', sep=sep, nrows=sample, on_bad_lines='skip')
+        df = df.replace(np.nan, None)
+        _ = await self.write_vocab(df, 'relationship', 'replace')
+
+        df = pd.read_csv(folder + '/CONCEPT_CLASS.csv', sep=sep, nrows=sample, on_bad_lines='skip')
+        df = df.replace(np.nan, None)
+        _ = await self.write_vocab(df, 'concept_class', 'replace')
+
+        df = pd.read_csv(folder + '/DOMAIN.csv', sep=sep, nrows=sample, on_bad_lines='skip')
+        df = df.replace(np.nan, None)
+        _ = await self.write_vocab(df, 'domain', 'replace')
+
+        #except Exception as e:
+        #    print(f"An error occurred while creating the vocabulary: {e}")
 
 
     @asynccontextmanager
