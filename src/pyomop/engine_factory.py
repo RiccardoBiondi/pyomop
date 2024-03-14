@@ -75,7 +75,7 @@ class CdmEngineFactory(object):
         if self._db == 'sqlite':
             self._engine = create_async_engine("sqlite+aiosqlite:///"+self._name)
         if self._db == 'mysql':
-            mysql_url = 'mysql://{}:{}@{}:{}/{}'
+            mysql_url = 'mysql+asyncmy://{}:{}@{}:{}/{}'
             mysql_url = mysql_url.format(self._user, self._pw, self._host, self._port, self._name)
             self._engine = create_async_engine(mysql_url, isolation_level="READ UNCOMMITTED")
         if self._db == 'pgsql':
